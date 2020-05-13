@@ -1,0 +1,25 @@
+//Futures Spread
+ 
+study(title = "Futures Curve", shorttitle = "Futures Curve")
+ 
+spot=security("BITMEX:BXBT",period,close)
+bitmex=security("BITMEX:XBTM20",period,close)
+deribit=security("DERIBIT:BTC26M20",period,close)
+ftx=security("FTX:BTC0626",period,close)
+okex=security("OKCOIN:BTCUSD3M",period,close)
+
+pbitmex=bitmex-spot
+pderibit=deribit-spot
+pftx=ftx-spot
+pokex=okex-spot
+
+
+
+
+
+
+hline(0,title="0")
+plot(pbitmex, title= "BitMEX", style=areabr,linewidth=2,color=green)
+plot(pderibit, title= "Deribit", style=areabr,linewidth=2,color=aqua)
+plot(pftx, title= "FTX", style=areabr,linewidth=2,color=red)
+plot(pokex, title= "OKEx", style=areabr,linewidth=1,color=yellow)
