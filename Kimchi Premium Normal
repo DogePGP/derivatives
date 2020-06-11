@@ -1,0 +1,19 @@
+// Created by @DogePGP
+study(title="Kimchi Premium Normal", shorttitle="Kimchi Premium Inverse" )
+
+
+// Inputs from user
+usdkrw = security("BITHUMB:BTCKRW",period,close)
+fxkrw = security("USDKRW",period,close)
+spot=security("BITMEX:BXBT",period,close)
+
+
+
+
+
+// Indicator calculations
+navkrw=((usdkrw/fxkrw)-spot)
+
+// Plot
+plot(navkrw, style=line, linewidth=2, color=white, title='Korea')
+h0= hline(0, linestyle=solid, linewidth=1, color=white, title="Upper Line")
