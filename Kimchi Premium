@@ -15,4 +15,5 @@ spot=security("BITMEX:BXBT",period,close)
 navkrw=((usdkrw/fxkrw)-spot)*-1
 
 // Plot
-plot(navkrw, style=line, linewidth=3, color=white, title='Korea')
+plot(navkrw, style=line, linewidth=2, color=white, title='Korea')
+h0= hline(0, linestyle=solid, linewidth=1, color=white, title="Upper Line")
