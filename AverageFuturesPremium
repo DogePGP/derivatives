@@ -17,4 +17,4 @@ combined=(pbitmex+pderibit+pftx+pokex)/4
 
 
 hline(0,title="0")
-plot(combined, title= "BitMEX", style=line,linewidth=2,color=green)
+plot(combined, title= "Premium", style=line,linewidth=2,color=green)
