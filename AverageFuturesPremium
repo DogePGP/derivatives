@@ -1,0 +1,20 @@
+//Futures Spread
+ 
+study(title = "Average futures premium", shorttitle = "Average futures premium")
+ 
+spot=security("BITFINEX:BTCUSD",period,close)
+bitmex=security("BITMEX:XBTU20",period,close)
+deribit=security("DERIBIT:BTC25U20",period,close)
+ftx=security("FTX:BTC0925",period,close)
+okex=security("OKCOIN:BTCUSD3M",period,close)
+
+pbitmex=bitmex-spot
+pderibit=deribit-spot
+pftx=ftx-spot
+pokex=okex-spot
+
+combined=(pbitmex+pderibit+pftx+pokex)/4
+
+
+hline(0,title="0")
+plot(combined, title= "BitMEX", style=line,linewidth=2,color=green)
