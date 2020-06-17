@@ -1,5 +1,4 @@
-//Futures Spread
- 
+// Created by @DogePGP 
 study(title = "Average futures premium", shorttitle = "Average futures premium")
  
 spot=security("BITFINEX:BTCUSD",period,close)
