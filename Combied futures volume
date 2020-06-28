@@ -1,0 +1,24 @@
+//Average futures premium
+//Created by @dogepgp
+ 
+study(title = "Combied futures volume", shorttitle = "Combied futures volume")
+ 
+
+//Inputs
+bitmex=security("BITMEX:XBTU20",period,volume)
+deribit=security("DERIBIT:BTC25U20",period,volume)
+ftx=security("FTX:BTC0925",period,volume)
+okex=security("OKEX:BTCUSD3M",period,volume)
+huobi=security("HUOBI:BTC25U2020",period,volume)
+
+
+//Combine
+frontmonth=(bitmex+deribit+ftx+okex+huobi)
+frontmonth_inverse=(bitmex+deribit+ftx+okex+huobi)*-1
+
+
+
+
+//Display
+plot(frontmonth, title= "Combined Futures", style=columns,linewidth=1,color=white)
+plot(sma(frontmonth_inverse,10),title="Average",color = white,linewidth=1, title = '10')
