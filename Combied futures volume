@@ -16,4 +16,4 @@ frontmonth_inverse=(bitmex+deribit+ftx+okex+huobi)*-1
 
 //Display
 plot(frontmonth, title= "Combined Futures", style=columns,linewidth=1,color=white)
-plot(sma(frontmonth_inverse,10),title="Average",color = white,linewidth=1)
+plot(sma(frontmonth_inverse,10),title="Average",color=white,linewidth=1)
