@@ -1,4 +1,4 @@
-//Average futures premium
+//Combined futures premium
 //Created by @dogepgp
  
 study(title = "Combied futures volume", shorttitle = "Combied futures volume")
