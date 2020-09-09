@@ -1,11 +1,13 @@
 //@version=3
-study("US Federal debt in ounces of gold", "")
+study("Consumer Price Index for All Urban Consumers", "")
 
 //pull data
-fed=security("QUANDL:FRED/GFDEBTN", "D", close)
-gold=security("TVC:GOLD", "D", close)
+all=security("QUANDL:FRED/CPILFESL", "D", close)
+foodenergy=security("QUANDL:FRED/CPIAUCSL", "D", close)
+
 
 //calculate
-output=fed/gold
+//output=all-foodenergy
 
-plot( output , "Debt/Gold", white, trackprice=false)
+plot(all, "All", white, trackprice=false)
+plot(foodenergy, "Less food/energy", red, trackprice=false)
