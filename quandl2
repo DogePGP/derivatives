@@ -1,0 +1,12 @@
+//@version=3
+study("Consumer Price Index for All Urban Consumers", "")
+
+//pull data
+all=security("QUANDL:FRED/CPILFESL", "D", close)
+foodenergy=security("QUANDL:FRED/CPIAUCSL", "D", close)
+
+
+//calculate
+output=all-foodenergy
+
+plot(output, style=columns, linewidth=1, color=white, title='CPI Delta')
