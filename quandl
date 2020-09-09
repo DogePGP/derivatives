@@ -1,0 +1,11 @@
+//@version=3
+study("US Federal debt in ounces of gold", "")
+
+//pull data
+fed=security("QUANDL:FRED/GFDEBTN", "D", close)
+gold=security("TVC:GOLD", "D", close)
+
+//calculate
+output=fed/gold
+
+plot( output , "Debt/Gold", white, trackprice=false)
