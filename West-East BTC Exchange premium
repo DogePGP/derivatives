@@ -1,4 +1,4 @@
-// Created by @DogePGP
+/// Created by @DogePGP
 //https://twitter.com/ByzGeneral/status/1310296071793500161
 
 study(title="West-East BTC Exchange premium", shorttitle="Exchange premium" )
@@ -19,38 +19,7 @@ west=((coinbase+gemini+kraken+bitstamp)/4)
 
 //ASIA region
 bithumb = security("BITHUMB:BTCKRW",period,close)
-bithumbfx= (bithumb*KRWUSD)
-bitflyerjp = security("BITFLYER:BTCJPY", period, close)
-bitflyerjpfx= (bitflyerjp/(USDJPY))
-huobi = security("HUOBI:BTCUSDT", period, close)
-okex = security("OKEX:BTCUSDT",period,close)
-east=((bithumbfx+bitflyerjpfx+huobi+okex)/4)
-
-
-
-pacificwar=west-east
-plot(// Created by @DogePGP
-//https://twitter.com/ByzGeneral/status/1310296071793500161
-
-study(title="West-East BTC Exchange premium", shorttitle="Exchange premium" )
-
-
-//FX Prices
-USDJPY = security("USDJPY",period,close)
-KRWUSD = security("FX_IDC:KRWUSD",period,close)
-
-
-// US & EUROPE region
-coinbase = security("COINBASE:BTCUSD",period,close)
-gemini = security("GEMINI:BTCUSD", period, close)
-kraken = security("KRAKEN:XBTUSD", period, close)
-bitstamp = security("BITSTAMP:BTCUSD",period,close)
-west=((coinbase+gemini+kraken+bitstamp)/4)
-
-
-//ASIA region
-bithumb = security("BITHUMB:BTCKRW",period,close)
-bithumbfx= (bithumb/KRWUSD)/1000000
+bithumbfx= (bithumb/KRWUSD)
 bitflyerjp = security("BITFLYER:BTCJPY", period, close)
 bitflyerjpfx= (bitflyerjp/(USDJPY))
 huobi = security("HUOBI:BTCUSDT", period, close)
@@ -61,13 +30,6 @@ east=((bithumbfx+bitflyerjpfx+huobi+okex)/4)
 
 pacificwar=west-east
 plot(pacificwar, style=line, linewidth=1, color=white, title='Premium')
-
-bgcolor(pacificwar < -300 ? green : pacificwar > 300 ? blue : na, transp=50)
-
-//h0= hline(1, linestyle=solid, linewidth=2, color=red, title="Upper Line")
-//h1= hline(-10, linestyle=solid, linewidth=2, color=green, title="Lower Line")
-//h2= hline(0, linestyle=solid, linewidth=1, color=white, title="Lower Line")
-, style=line, linewidth=1, color=white, title='Premium')
 
 bgcolor(pacificwar < -300 ? green : pacificwar > 300 ? blue : na, transp=50)
 
