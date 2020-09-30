@@ -31,4 +31,4 @@ east=((bithumbfx+bitflyerjpfx+huobi+okex)/4)
 pacificwar=west-east
 plot(pacificwar, style=line, linewidth=1, color=white, title='Premium')
 
-bgcolor(pacificwar < -100 ? green : pacificwar > 100 ? blue : na, transp=50)
+bgcolor(pacificwar < -50 ? green : pacificwar > 50 ? blue : na, transp=50)
