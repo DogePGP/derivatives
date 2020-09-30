@@ -1,0 +1,34 @@
+// Created by @DogePGP
+//https://twitter.com/ByzGeneral/status/1310296071793500161
+
+study(title="West-East ETH Exchange premium", shorttitle="ETH Asian premium" )
+
+
+//FX Prices
+USDJPY = security("USDJPY",period,close)
+KRWUSD = security("FX_IDC:KRWUSD",period,close)
+
+
+// US & EUROPE region
+coinbase = security("COINBASE:ETHUSD",period,close)
+gemini = security("GEMINI:ETHUSD", period, close)
+kraken = security("KRAKEN:ETHUSD", period, close)
+bitstamp = security("BITSTAMP:ETHUSD",period,close)
+west=((coinbase+gemini+kraken+bitstamp)/4)
+
+
+//ASIA region
+bithumb = security("BITHUMB:ETHKRW",period,close)
+bithumbfx= (bithumb*KRWUSD)
+bitflyerjp = security("BITFLYER:ETHJPY", period, close)
+bitflyerjpfx= (bitflyerjp/(USDJPY))
+huobi = security("HUOBI:ETHUSDT", period, close)
+okex = security("OKEX:ETHUSDT",period,close)
+east=((bithumbfx+bitflyerjpfx+huobi+okex)/4)
+
+
+
+pacificwar=west-east
+plot(pacificwar, style=columns, linewidth=1, color=white, title='ETH')
+
+bgcolor(pacificwar < -3 ? green : pacificwar > 3 ? blue : na, transp=50)
