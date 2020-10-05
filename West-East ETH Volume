@@ -19,11 +19,7 @@ bithumb = security("BITHUMB:ETHKRW",period,volume)       //25043
 bitflyerjp = security("BITFLYER:ETHJPY", period, volume) //7764
 huobi = security("HUOBI:ETHUSDT", period, volume)        //356060
 okex = security("OKEX:ETHUSDT",period,volume)            //147907
-bithumbx=bithumb/2.04
-bitflyerjpx=bitflyerjp*2.8517
-huobix=huobi/55
-okexx=okex/16.37
-east=((bithumbx+bitflyerjpx+huobix+okexx)/4)
+east=((bithumb+bitflyerjp+huobi+okex)/4)
 ////////////////////ASIA region/////////////////////////
 
 
