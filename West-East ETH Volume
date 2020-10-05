@@ -9,7 +9,7 @@ coinbase = security("COINBASE:ETHUSD",period,volume)     //43400
 gemini = security("GEMINI:ETHUSD", period, volume)       //4254
 kraken = security("KRAKEN:ETHUSD", period, volume)       //15224
 bitstamp = security("BITSTAMP:ETHUSD",period,volume)     //14846
-west=((coinbase+gemini+kraken+bitstamp)/4)*6.9062
+west=((coinbase+gemini+kraken+bitstamp)/4)+17076
 ////////////////US & EUROPE region///////////////////
 
 
@@ -24,8 +24,8 @@ east=((bithumb+bitflyerjp+huobi+okex)/4)
 
 
 
-pacificwar=(west-east)
+pacificwar=(east-west)
 sma15=sma(pacificwar, 5)
-plot(pacificwar, style=columns, linewidth=1, color=white, title='ETH')
+plot(sma15, style=columns, linewidth=1, color=white, title='ETH')
 
-//bgcolor(sma15 < -360000 ? green : sma15 > 0 ? blue : na, transp=10)
+bgcolor(sma15 < -0 ? green : sma15 > 94000 ? blue : na, transp=10)
