@@ -1,0 +1,35 @@
+// Created by @DogePGP
+//https://twitter.com/ByzGeneral/status/1310296071793500161
+
+study(title="West/East ETH Volume", shorttitle="West/East ETH Volume" )
+
+
+////////////////US & EUROPE region///////////////////
+coinbase = security("COINBASE:ETHUSD",period,volume)     //43400
+gemini = security("GEMINI:ETHUSD", period, volume)       //4254
+kraken = security("KRAKEN:ETHUSD", period, volume)       //15224
+bitstamp = security("BITSTAMP:ETHUSD",period,volume)     //14846
+west=((coinbase+gemini+kraken+bitstamp)/4)*6.9062
+////////////////US & EUROPE region///////////////////
+
+
+
+////////////////////ASIA region/////////////////////////
+bithumb = security("BITHUMB:ETHKRW",period,volume)       //25043
+bitflyerjp = security("BITFLYER:ETHJPY", period, volume) //7764
+huobi = security("HUOBI:ETHUSDT", period, volume)        //356060
+okex = security("OKEX:ETHUSDT",period,volume)            //147907
+bithumbx=bithumb/2.04
+bitflyerjpx=bitflyerjp*2.8517
+huobix=huobi/55
+okexx=okex/16.37
+east=((bithumbx+bitflyerjpx+huobix+okexx)/4)
+////////////////////ASIA region/////////////////////////
+
+
+
+pacificwar=(west-east)
+sma15=sma(pacificwar, 5)
+plot(pacificwar, style=columns, linewidth=1, color=white, title='ETH')
+
+//bgcolor(sma15 < -360000 ? green : sma15 > 0 ? blue : na, transp=10)
