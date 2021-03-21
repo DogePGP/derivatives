@@ -1,0 +1,55 @@
+// Orginal Pi Cycle top indicator made by Ninorigo
+// Pi delta% made by #dogepgp
+
+
+//@version=4
+study(title="Pi delta%", shorttitle="Pi delta%", overlay=false, resolution="D")
+
+choice = input(title="Coin",defval="BITCOIN",options=["BITCOIN","ETHEREUM","LITECOIN","XRP","CARDANO","LINK","DOGE","TRON","DECRED","MAKER","ZCASH","ETH CLASSIC","ICON"])
+
+
+long_sma = input(title="Long SMA", type=input.integer, defval=350, minval=-10, maxval=30000)
+short_sma = input(title="Short SMA", type=input.integer, defval=111, minval=-10, maxval=30000)
+time_interval   = ""
+
+bitcoin = security("bitfinex:btcusd", time_interval, close)
+
+ticker=(
+         choice == "BITCOIN" ? "bitfinex:btcusd" : 
+         choice == "ETHEREUM" ? "kraken:ethusd" : 
+         choice == "LITECOIN" ? "bitfinex:ltcusd" : 
+         choice == "XRP" ? "bitstamp:xrpbtc" : 
+         choice == "CARDANO" ? "bittrex:adabtc" : 
+         choice == "LINK" ? "hitbtc:linkusd" : 
+         choice == "DOGE" ? "bittrex:dogebtc" : 
+         choice == "TRON" ? "hitbtc:trxbtc" : 
+         choice == "DECRED" ? "bittrex:dcrbtc" : 
+         choice == "MAKER" ? "bitfinex:mkrbtc" : 
+         choice == "ZCASH" ? "bitfinex:zecusd" :
+         choice == "ETH CLASSIC" ? "poloniex:etcbtc" :
+         choice == "ICON" ? "hitbtc:icxbtc" :
+         na)
+
+
+
+long_ma  = security(ticker, time_interval, sma(close, long_sma)*2)
+short_ma = security(ticker, time_interval, sma(close, short_sma))
+src_data = security(ticker, time_interval, close)
+delta=(((long_ma-short_ma)/src_data)*100)
+delta2=((long_ma-short_ma)/(src_data*bitcoin))*100000
+
+
+btcpair=(
+          choice == "DOGE" ? delta2 : 
+          choice == "CARDANO" ? delta2 : 
+          choice == "XRP" ? delta2 : 
+          choice == "TRON" ? delta2 : 
+          choice == "DECRED" ? delta2 :
+          choice == "MAKER" ? delta2 :
+          choice == "ETH CLASSIC" ? delta2 :
+          choice == "ICON" ? delta2 :
+          delta)
+
+plot(btcpair, color=color.blue, title="Delta%")
+hline(0, linestyle = hline.style_dotted, linewidth = 1, color = color.new(#ffffff, 10), title = "Baseline")
+//hline(300, linestyle = hline.style_dotted, linewidth = 1, color = color.new(#ffffff, 10), title = "Baseline")
