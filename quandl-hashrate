@@ -1,0 +1,4 @@
+//@version=4
+study(title = "Bitcoin Hashrate", overlay = false, precision = 0)
+q = quandl("BCHAIN/HRATE", 0)
+plot(q,style=plot.style_line,linewidth=1,color=color.new(#99a6c5,0),title="Bitcoin Hashrate")
