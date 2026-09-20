@@ -1,0 +1,188 @@
+//@version=6
+indicator(title='% TOKENS over 200DMA', shorttitle='Breadth', overlay=false, precision=2, dynamic_requests=true)
+
+string tf      = input.string('D', 'Period', options=['5', '15', '60', '240', 'D', 'W', 'M'])
+int    length  = input.int(200, 'MA Length', minval=1)
+string wMode   = input.string('Tiered', 'Weighting', options=['Equal', 'Tiered'])
+bool   showSig = input.bool(false, 'Show Breadth SMA')
+int    sigLen  = input.int(10, 'Breadth SMA length', minval=1)
+float  highTh  = input.float(50.0, 'Green when % ≥', minval=0, maxval=100)
+float  lowTh   = input.float(35.0, 'Red when % ≤', minval=0, maxval=100)
+
+grpDur         = 'Duration marks'
+bool   showDur     = input.bool(true, 'Show duration marks', group=grpDur)
+bool   markHigh    = input.bool(true, 'Mark high-% (green) runs', group=grpDur)
+bool   markLow     = input.bool(false, 'Mark low-% (red) runs', group=grpDur)
+bool   markLive    = input.bool(true, 'Update active run', group=grpDur)
+int    minBars     = input.int(3, 'Minimum bars to mark', minval=1, group=grpDur)
+int    maxMarks    = input.int(20, 'Max stored marks', minval=1, maxval=100, group=grpDur)
+float  highLineY   = input.float(100.0, 'High-run line level', group=grpDur)
+float  lowLineY    = input.float(8.0, 'Low-run line level', group=grpDur)
+color  measColor   = input.color(color.new(#c0c4cc, 0), 'Line / label color', group=grpDur)
+
+type Token
+    string id
+    float  w
+
+// 35 coins + 5 CRYPTOCAP baskets = 40 feeds.
+// Baskets stand in for names we cannot request individually.
+var array<Token> tokens = array.from(
+     Token.new('CRYPTO:BTCUSD',        3.0),
+     Token.new('CRYPTO:ETHUSD',        3.0),
+     Token.new('BINANCE:BNBUSD',       2.0),
+     Token.new('BITSTAMP:XRPUSD',      2.0),
+     Token.new('COINBASE:SOLUSD',      2.0),
+     Token.new('CRYPTO:TRXUSD',        2.0),
+     Token.new('CRYPTO:ZECUSD',        2.0),
+     Token.new('COINBASE:HYPEUSD',     2.0),
+     Token.new('CRYPTO:DOGEUSD',       2.0),
+     Token.new('KRAKEN:XMRUSD',        2.0),
+     Token.new('CRYPTO:LINKUSD',       2.0),
+     Token.new('CRYPTO:ADAUSD',        2.0),
+     Token.new('CRYPTO:GRAMUSD',       2.0),
+     Token.new('COINBASE:UNIUSD',      1.0),
+     Token.new('CRYPTO:LTCUSD',        1.0),
+     Token.new('CRYPTO:NEARUSD',       1.0),
+     Token.new('BINANCE:AVAXUSD',      1.0),
+     Token.new('CRYPTO:SHIBUSD',       1.0),
+     Token.new('CRYPTO:SUIUSD',        1.0),
+     Token.new('PYTH:TAOUSD',          1.0),
+     Token.new('CRYPTO:DOTUSD',        1.0),
+     Token.new('CRYPTO:PEPEUSD',       1.0),
+     Token.new('CRYPTO:ICPUSD',        1.0),
+     Token.new('COINBASE:SKYUSD',      1.0),
+     Token.new('BINANCE:WLDUSD',       1.0),
+     Token.new('COINBASE:ARBUSD',      1.0),
+     Token.new('CRYPTO:ETCUSD',        1.0),
+     Token.new('PYTH:POLUSD',          1.0),
+     Token.new('CRYPTO:KASUSD',        1.0),
+     Token.new('COINBASE:ATOMUSD',     1.0),
+     Token.new('BITSTAMP:JUPUSD',      1.0),
+     Token.new('CRYPTO:XLMUSD',        1.0),
+     Token.new('CRYPTO:BCHUSD',        1.0),
+     Token.new('CRYPTO:HBARUSD',       1.0),
+     Token.new('CRYPTO:AAVEUSD',       1.0),
+     Token.new('CRYPTOCAP:TOTALE50',   6.0),
+     Token.new('CRYPTOCAP:OTHERS',     5.0),
+     Token.new('CRYPTOCAP:TOTALDEFI',  4.0),
+     Token.new('CRYPTOCAP:MEME.C',     3.0),
+     Token.new('CRYPTOCAP:AI.C',       3.0))
+
+readyAbove() =>
+    float s = ta.sma(close, length)
+    not na(close[1]) and not na(s[1]) ? (close[1] > s[1] ? 1.0 : 0.0) : na
+
+float aboveW = 0.0
+float validW = 0.0
+int   validN = 0
+
+for t in tokens
+    float v = request.security(t.id, tf, readyAbove(), barmerge.gaps_off, barmerge.lookahead_on, ignore_invalid_symbol=true)
+    float w = wMode == 'Equal' ? 1.0 : t.w
+    if not na(v)
+        aboveW += v * w
+        validW += w
+        validN += 1
+
+float pct = validW > 0 ? 100.0 * aboveW / validW : na
+float sig = ta.sma(pct, sigLen)
+color col = pct >= highTh ? color.new(#2a9d8f, 10) : pct <= lowTh ? color.new(#ef233c, 10) : color.new(#8d99ae, 25)
+
+plot(pct, style=plot.style_columns, color=col, title='% above MA')
+plot(showSig ? sig : na, color=color.new(#ffd166, 0), linewidth=2, title='Breadth SMA')
+plot(validN, 'Eligible series', display=display.data_window)
+hline(highTh, 'High %', color.new(#2a9d8f, 60), hline.style_dashed)
+hline(lowTh, 'Low %', color.new(#ef233c, 60), hline.style_dashed)
+
+alertcondition(ta.crossover(pct, highTh), 'Breadth strong', 'Weighted breadth crossed above the high threshold')
+alertcondition(ta.crossunder(pct, lowTh), 'Breadth weak', 'Weighted breadth crossed below the low threshold')
+alertcondition(ta.crossover(pct, sig), 'Breadth SMA cross up', 'Breadth crossed above its SMA')
+alertcondition(ta.crossunder(pct, sig), 'Breadth SMA cross down', 'Breadth crossed below its SMA')
+
+type Mark
+    line  ln
+    label lb
+
+var array<Mark> marks = array.new<Mark>()
+
+durText(int nBars, int t0, int t1) =>
+    int nDays = math.max(0, math.round((t1 - t0) / 86400000.0))
+    str.tostring(nBars) + ' bars   ' + str.tostring(nDays) + 'd'
+
+pruneMarks() =>
+    while array.size(marks) > maxMarks
+        Mark old = array.shift(marks)
+        line.delete(old.ln)
+        label.delete(old.lb)
+
+placeMark(int x1, int x2, int t0, int t1, float y, bool above) =>
+    int nBars = x2 - x1 + 1
+    if nBars >= minBars
+        line ln = line.new(x1, y, x2, y, xloc.bar_index, extend.none, measColor, line.style_arrow_both, 1)
+        int mid = int(math.round(0.5 * (x1 + x2)))
+        string txt = durText(nBars, t0, t1)
+        label lb = label.new(mid, y, txt, xloc.bar_index, yloc.price, color.new(#1b1e2b, 8), above ? label.style_label_down : label.style_label_up, color.white, size.small, text.align_center, txt)
+        array.push(marks, Mark.new(ln, lb))
+        pruneMarks()
+
+type Run
+    int   startBar
+    int   startTime
+    line  ln
+    label lb
+
+var Run highRun = na
+var Run lowRun  = na
+
+updateLive(Run r, int x2, int t1, float y) =>
+    if not na(r) and not na(r.ln)
+        line.set_xy2(r.ln, x2, y)
+        label.set_xy(r.lb, int(math.round(0.5 * (r.startBar + x2))), y)
+        label.set_text(r.lb, durText(x2 - r.startBar + 1, r.startTime, t1))
+
+startLive(int x, int t0, float y, bool above) =>
+    line ln = na
+    label lb = na
+    if markLive
+        ln := line.new(x, y, x, y, xloc.bar_index, extend.none, measColor, line.style_arrow_both, 1)
+        lb := label.new(x, y, durText(1, t0, time), xloc.bar_index, yloc.price, color.new(#1b1e2b, 8), above ? label.style_label_down : label.style_label_up, color.white, size.small)
+    Run.new(x, t0, ln, lb)
+
+killLive(Run r) =>
+    if not na(r)
+        if not na(r.ln)
+            line.delete(r.ln)
+        if not na(r.lb)
+            label.delete(r.lb)
+
+bool inHigh = showDur and markHigh and not na(pct) and pct >= highTh
+bool inLow  = showDur and markLow  and not na(pct) and pct <= lowTh
+
+if showDur
+    if inHigh
+        if na(highRun)
+            highRun := startLive(bar_index, time, highLineY, true)
+        else if markLive
+            updateLive(highRun, bar_index, time, highLineY)
+    else if not na(highRun)
+        int endBar = bar_index - 1
+        int endT   = time[1]
+        int nBars  = endBar - highRun.startBar + 1
+        killLive(highRun)
+        if nBars >= minBars
+            placeMark(highRun.startBar, endBar, highRun.startTime, endT, highLineY, true)
+        highRun := na
+
+    if inLow
+        if na(lowRun)
+            lowRun := startLive(bar_index, time, lowLineY, false)
+        else if markLive
+            updateLive(lowRun, bar_index, time, lowLineY)
+    else if not na(lowRun)
+        int endBar = bar_index - 1
+        int endT   = time[1]
+        int nBars  = endBar - lowRun.startBar + 1
+        killLive(lowRun)
+        if nBars >= minBars
+            placeMark(lowRun.startBar, endBar, lowRun.startTime, endT, lowLineY, false)
+        lowRun := na
